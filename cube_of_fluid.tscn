@@ -1,0 +1,113 @@
+[gd_scene load_steps=2 format=3 uid="uid://drap642hym56m"]
+
+[ext_resource type="PackedScene" uid="uid://57o768bp52yp" path="res://droplet.tscn" id="1_0nflr"]
+
+[node name="CubeOfFluid" type="Node3D"]
+
+[node name="Droplet" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.657778, -0.0749906, -0.653297)
+
+[node name="Droplet2" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.725972, -0.0588486, -0.730454)
+
+[node name="Droplet3" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.664247, -0.0840411, 0.67894)
+
+[node name="Droplet4" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.724572, -0.00590235, 0.730378)
+
+[node name="Droplet5" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.349077, 0.0819189, 0.344595)
+
+[node name="Droplet6" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.360764, 0.0916519, -0.344671)
+
+[node name="Droplet7" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0147312, 0.0294287, -0.715022)
+
+[node name="Droplet8" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0521378, 0, 0.72009)
+
+[node name="Droplet9" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.720829, 0, 0.0411122)
+
+[node name="Droplet10" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.724572, -0.0862233, -0.0257568)
+
+[node name="Droplet11" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.199907, 0, -0.205789)
+
+[node name="Droplet12" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.211595, 0.0464153, 0.205713)
+
+[node name="Droplet25" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.662526, -0.717963, -0.659368)
+
+[node name="Droplet26" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.739683, -0.701821, 0.724383)
+
+[node name="Droplet27" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.669711, -0.727013, 0.662658)
+
+[node name="Droplet28" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.721149, -0.632065, -0.726161)
+
+[node name="Droplet29" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.335366, -0.561053, -0.350666)
+
+[node name="Droplet30" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.3539, -0.55132, 0.359175)
+
+[node name="Droplet31" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.724251, -0.613543, -0.0163204)
+
+[node name="Droplet32" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.710861, -0.642972, 0.0505486)
+
+[node name="Droplet33" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.0318834, -0.642972, 0.719239)
+
+[node name="Droplet34" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.0349858, -0.729195, -0.726161)
+
+[node name="Droplet35" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0.215018, -0.642972, -0.201496)
+
+[node name="Droplet36" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.196484, -0.596557, 0.210006)
+
+[node name="Droplet13" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.651708, 0.547406, 0.667007)
+
+[node name="Droplet14" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.728865, 0.563548, -0.716743)
+
+[node name="Droplet15" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.680529, 0.538356, -0.655018)
+
+[node name="Droplet16" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.731967, 0.673182, 0.733801)
+
+[node name="Droplet17" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.346184, 0.704316, 0.358305)
+
+[node name="Droplet18" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.343082, 0.714049, -0.351535)
+
+[node name="Droplet19" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.713433, 0.651825, 0.0239601)
+
+[node name="Droplet20" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.72168, 0.622397, -0.042909)
+
+[node name="Droplet21" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.0427014, 0.622397, -0.7116)
+
+[node name="Droplet22" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.0241676, 0.536173, 0.733801)
+
+[node name="Droplet23" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.2042, 0.622397, 0.209136)
+
+[node name="Droplet24" parent="." instance=ExtResource("1_0nflr")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.207302, 0.668812, -0.202366)

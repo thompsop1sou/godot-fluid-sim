@@ -1,0 +1,93 @@
+[gd_scene load_steps=7 format=3 uid="uid://baaebptsoorum"]
+
+[ext_resource type="Script" path="res://test.gd" id="1_qhrsy"]
+[ext_resource type="PackedScene" uid="uid://cqbjmqqqqdvsu" path="res://wall.tscn" id="1_us8dn"]
+[ext_resource type="Script" path="res://droplet_generation.gd" id="3_d28nf"]
+
+[sub_resource type="Environment" id="Environment_exfea"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lu3v8"]
+size = Vector3(2, 2, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_i5bnb"]
+size = Vector3(2, 2, 2)
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_qhrsy")
+
+[node name="LabelsBox" type="VBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ProcessFPS" type="Label" parent="LabelsBox"]
+layout_mode = 2
+
+[node name="PhysicsFPS" type="Label" parent="LabelsBox"]
+layout_mode = 2
+
+[node name="Droplets" type="Label" parent="LabelsBox"]
+layout_mode = 2
+
+[node name="Container" type="Node3D" parent="."]
+
+[node name="Wall" parent="Container" instance=ExtResource("1_us8dn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
+
+[node name="Wall2" parent="Container" instance=ExtResource("1_us8dn")]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -5, 0, 0)
+
+[node name="Wall3" parent="Container" instance=ExtResource("1_us8dn")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -5)
+
+[node name="Wall4" parent="Container" instance=ExtResource("1_us8dn")]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 5, 0, 0)
+
+[node name="Wall5" parent="Container" instance=ExtResource("1_us8dn")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 5)
+visible = false
+
+[node name="Wall6" parent="Container" instance=ExtResource("1_us8dn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+visible = false
+
+[node name="DropletGenerator" type="Node3D" parent="."]
+script = ExtResource("3_d28nf")
+use_servers = false
+max_droplets = 300
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+environment = SubResource("Environment_exfea")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0, 10, 0)
+shadow_enabled = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+mesh = SubResource("BoxMesh_lu3v8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_i5bnb")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 3)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D2"]
+mesh = SubResource("BoxMesh_lu3v8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2"]
+shape = SubResource("BoxShape3D_i5bnb")
+
+[node name="StaticBody3D3" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -3)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D3"]
+mesh = SubResource("BoxMesh_lu3v8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3"]
+shape = SubResource("BoxShape3D_i5bnb")
