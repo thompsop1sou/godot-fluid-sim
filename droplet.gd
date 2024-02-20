@@ -3,7 +3,7 @@ class_name Droplet extends RigidBody3D
 var nearby_droplets: Array[Droplet]
 var nearby_bodies: Array[PhysicsBody3D]
 var droplet_force_magnitude: float = -300
-var body_force_magnitude: float = -100
+var body_force_magnitude: float = 0
 
 # Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):

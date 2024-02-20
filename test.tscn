@@ -54,7 +54,8 @@ visible = false
 
 [node name="DropletGenerator" type="Node3D" parent="."]
 script = ExtResource("3_d28nf")
-max_droplets = 1000
+droplet_type = 3
+max_droplets = 300
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)

@@ -1,15 +1,11 @@
 extends Node3D
 
-@export var use_servers: bool = true
-
-var droplet_bodies: Array[RID]
-var droplet_body_shape: RID
-
-var droplet_meshes: Array[RID]
-var droplet_mesh_shape: SphereMesh = preload("res://droplet_mesh.tres")
+@export_enum("Regular", "Server", "Custom", "Custom2") var droplet_type: int = 0
 
 var droplet_scene: PackedScene = preload("res://droplet.tscn")
 var server_droplet_scene: PackedScene = preload("res://server_droplet.tscn")
+var custom_droplet_scene: PackedScene = preload("res://custom_droplet.tscn")
+var custom_droplet_2_scene: PackedScene = preload("res://custom_droplet_2.tscn")
 
 var elapsed_time: float = 0.0
 @export var interval: float = 0.01
@@ -17,25 +13,26 @@ var elapsed_time: float = 0.0
 var total_droplets: int = 0
 @export var max_droplets: int = 4000
 
-func _ready():
-	droplet_body_shape = PhysicsServer3D.sphere_shape_create()
-	PhysicsServer3D.shape_set_data(droplet_body_shape, 0.25)
-
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _physics_process(delta):
 	elapsed_time += delta
 	if elapsed_time > interval and total_droplets < max_droplets:
 		elapsed_time = 0.0
 		var droplet_transform := Transform3D(Basis(), Vector3(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)))
-		if use_servers:
-			var droplet_node = server_droplet_scene.instantiate()
-			get_parent().add_child(droplet_node)
-			droplet_node.transform = droplet_transform
-		else:
+		if droplet_type == 0:
 			var droplet_node = droplet_scene.instantiate()
 			get_parent().add_child(droplet_node)
 			droplet_node.transform = droplet_transform
+		elif droplet_type == 1:
+			var droplet_node = server_droplet_scene.instantiate()
+			get_parent().add_child(droplet_node)
+			droplet_node.transform = droplet_transform
+		elif droplet_type == 2:
+			var droplet_node = custom_droplet_scene.instantiate()
+			get_parent().add_child(droplet_node)
+			droplet_node.transform = droplet_transform
+		elif droplet_type == 3:
+			var droplet_node = custom_droplet_2_scene.instantiate()
+			get_parent().add_child(droplet_node)
+			droplet_node.transform = droplet_transform
 		total_droplets += 1
-
-func _droplet_moved(state: PhysicsDirectBodyState3D, index: int):
-	RenderingServer.instance_set_transform(droplet_meshes[index], state.transform)
