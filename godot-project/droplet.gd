@@ -6,7 +6,7 @@ var droplet_force_magnitude: float = -300
 var body_force_magnitude: float = 0
 
 # Called every physics frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta):
+func _physics_process(_delta):
 	var droplet_force = Vector3()
 	for droplet in nearby_droplets:
 		droplet_force += (position - droplet.position).normalized()

@@ -22,7 +22,7 @@ func deregister_custom_droplet(custom_droplet: CustomDroplet):
 	custom_forces.pop_back()
 	num_custom_droplets -= 1
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var i: int = 0
 	var j: int = 0
 	while i < num_custom_droplets:

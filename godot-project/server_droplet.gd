@@ -24,8 +24,8 @@ func _exit_tree():
 	PhysicsServer3D.free_rid(droplet_area_shape_rid)
 	PhysicsServer3D.free_rid(droplet_area_rid)
 
-func area_monitor_callback(status: int, body_rid: RID, instance_id: int,
-							body_shape_idx: int, self_shape_idx: int) -> void:
+func area_monitor_callback(status: int, body_rid: RID, _instance_id: int,
+							_body_shape_idx: int, _self_shape_idx: int) -> void:
 	if body_rid != droplet_body_rid:
 		if status == PhysicsServer3D.AREA_BODY_ADDED:
 			nearby_body_rids.append(body_rid)
@@ -33,7 +33,7 @@ func area_monitor_callback(status: int, body_rid: RID, instance_id: int,
 			nearby_body_rids.erase(body_rid)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var body_force = Vector3()
 	for body_rid in nearby_body_rids:
 		var body_position = PhysicsServer3D.body_get_direct_state(body_rid).transform.origin
