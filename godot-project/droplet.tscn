@@ -6,13 +6,13 @@
 friction = 0.05
 bounce = 0.3
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_17es1"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cbguj"]
 transparency = 1
 shading_mode = 0
 albedo_color = Color(0.501961, 0, 1, 0.25098)
 
 [sub_resource type="SphereMesh" id="SphereMesh_tshjn"]
-material = SubResource("StandardMaterial3D_17es1")
+material = SubResource("StandardMaterial3D_cbguj")
 radius = 0.375
 height = 0.75
 radial_segments = 12

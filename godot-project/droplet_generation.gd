@@ -1,11 +1,12 @@
 extends Node3D
 
-@export_enum("Regular", "Server", "Custom", "Custom2") var droplet_type: int = 0
+@export_enum("Regular", "Server", "Custom", "Custom2", "CppDroplet") var droplet_type: int = 0
 
 var droplet_scene: PackedScene = preload("res://droplet.tscn")
 var server_droplet_scene: PackedScene = preload("res://server_droplet.tscn")
 var custom_droplet_scene: PackedScene = preload("res://custom_droplet.tscn")
 var custom_droplet_2_scene: PackedScene = preload("res://custom_droplet_2.tscn")
+var droplet_body_3d_scene: PackedScene = preload("res://droplet_body_3d.tscn")
 
 var elapsed_time: float = 0.0
 @export var interval: float = 0.01
@@ -33,6 +34,10 @@ func _physics_process(delta):
 			droplet_node.transform = droplet_transform
 		elif droplet_type == 3:
 			var droplet_node = custom_droplet_2_scene.instantiate()
+			get_parent().add_child(droplet_node)
+			droplet_node.transform = droplet_transform
+		elif droplet_type == 4:
+			var droplet_node = droplet_body_3d_scene.instantiate()
 			get_parent().add_child(droplet_node)
 			droplet_node.transform = droplet_transform
 		total_droplets += 1
