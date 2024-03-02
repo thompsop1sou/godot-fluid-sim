@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://baaebptsoorum"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_lp3pp"]
+[ext_resource type="PackedScene" uid="uid://ccm35ko0cu32r" path="res://level_geometry/container.tscn" id="2_psroa"]
+[ext_resource type="Script" path="res://droplet_generator.gd" id="4_y4u82"]
+
+[sub_resource type="Environment" id="Environment_exfea"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+
+[sub_resource type="Environment" id="Environment_hwphr"]
+ambient_light_source = 2
+ambient_light_color = Color(0.875, 0.875, 1, 1)
+ambient_light_energy = 0.5
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_lp3pp")
+
+[node name="DropletGenerator" type="Node3D" parent="."]
+script = ExtResource("4_y4u82")
+droplet_server_type = 1
+
+[node name="Container" parent="." instance=ExtResource("2_psroa")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 12)
+environment = SubResource("Environment_exfea")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 0, 0)
+light_color = Color(1, 1, 0.875, 1)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_hwphr")
+
+[node name="LabelsBox" type="VBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 77.0
+
+[node name="ProcessFPS" type="Label" parent="LabelsBox"]
+layout_mode = 2
+
+[node name="PhysicsFPS" type="Label" parent="LabelsBox"]
+layout_mode = 2
+
+[node name="Droplets" type="Label" parent="LabelsBox"]
+layout_mode = 2

@@ -1,4 +1,0 @@
-[gd_scene format=3 uid="uid://c7mdmp8pv0gwu"]
-
-[node name="GlobalDropletServer" type="DropletServer"]
-force_magnitude = 150.0

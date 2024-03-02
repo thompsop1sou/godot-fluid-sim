@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://c7mdmp8pv0gwu"]
+
+[node name="CppDropletServer" type="CppDropletServer"]

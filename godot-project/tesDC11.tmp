@@ -1,0 +1,69 @@
+[gd_scene load_steps=6 format=3 uid="uid://baaebptsoorum"]
+
+[ext_resource type="Script" path="res://test.gd" id="1_qhrsy"]
+[ext_resource type="PackedScene" uid="uid://cqbjmqqqqdvsu" path="res://wall.tscn" id="1_us8dn"]
+[ext_resource type="PackedScene" uid="uid://dy5gf6h1l6b57" path="res://static_box.tscn" id="3_44dr0"]
+[ext_resource type="Script" path="res://droplet_generation.gd" id="3_d28nf"]
+
+[sub_resource type="Environment" id="Environment_exfea"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_qhrsy")
+
+[node name="LabelsBox" type="VBoxContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ProcessFPS" type="Label" parent="LabelsBox"]
+layout_mode = 2
+
+[node name="PhysicsFPS" type="Label" parent="LabelsBox"]
+layout_mode = 2
+
+[node name="Droplets" type="Label" parent="LabelsBox"]
+layout_mode = 2
+
+[node name="Container" type="Node3D" parent="."]
+
+[node name="Wall" parent="Container" instance=ExtResource("1_us8dn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
+
+[node name="Wall2" parent="Container" instance=ExtResource("1_us8dn")]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, -5, 0, 0)
+
+[node name="Wall3" parent="Container" instance=ExtResource("1_us8dn")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -5)
+
+[node name="Wall4" parent="Container" instance=ExtResource("1_us8dn")]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 5, 0, 0)
+
+[node name="Wall5" parent="Container" instance=ExtResource("1_us8dn")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 5)
+visible = false
+
+[node name="Wall6" parent="Container" instance=ExtResource("1_us8dn")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+
+[node name="StaticBox" parent="Container" instance=ExtResource("3_44dr0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 0)
+
+[node name="StaticBox2" parent="Container" instance=ExtResource("3_44dr0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -3)
+
+[node name="StaticBox3" parent="Container" instance=ExtResource("3_44dr0")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, 3)
+
+[node name="DropletGenerator" type="Node3D" parent="."]
+script = ExtResource("3_d28nf")
+droplet_type = 2
+max_droplets = 2000
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+environment = SubResource("Environment_exfea")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0, 10, 0)
+shadow_enabled = true

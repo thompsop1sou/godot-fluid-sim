@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6liqjtx4cq2q"]
+
+[ext_resource type="Script" path="res://cs_droplet/CsDropletServer.cs" id="1_x21ck"]
+
+[node name="CsDropletServer" type="Node"]
+script = ExtResource("1_x21ck")

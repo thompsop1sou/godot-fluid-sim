@@ -1,0 +1,64 @@
+extends Node3D
+
+
+
+# Properties
+
+# The different types of droplet scenes
+var gdscript_droplet_scene: PackedScene = preload("res://gdscript_droplet/gdscript_droplet.tscn")
+var cs_droplet_scene: PackedScene = preload("res://cs_droplet/cs_droplet.tscn")
+var cpp_droplet_scene: PackedScene = preload("res://cpp_droplet/cpp_droplet.tscn")
+
+# Enum for the various droplet server types
+enum DropletServerType {GDSCRIPT_SERVER, CS_SERVER, CPP_SERVER}
+
+## Which type of droplet server to use
+@export
+var droplet_server_type := DropletServerType.GDSCRIPT_SERVER
+
+## How much time between each droplet generation
+@export var generation_interval: float = 0.01
+
+# Elapsed time since last droplet generation
+var _elapsed_time: float = 0.0
+
+## The number of droplets to generate
+@export var droplets_to_generate: int = 2000:
+	get:
+		return droplets_to_generate
+	set(value):
+		var max_droplets: int = mini(4000, 4000)
+		droplets_to_generate = min(value, max_droplets)
+
+## The current number of droplets that have been generated
+var num_droplets: int = 0
+
+
+
+# Methods
+
+# Called every physics frame. 'delta' is the elapsed time since the previous frame.
+func _physics_process(delta: float) -> void:
+	_elapsed_time += delta
+	# Check if we should generate a new droplet
+	if _elapsed_time > generation_interval and num_droplets < droplets_to_generate:
+		_elapsed_time = 0.0
+		# Create the appropriate droplet type
+		var droplet_node: RigidBody3D
+		match droplet_server_type:
+			DropletServerType.GDSCRIPT_SERVER:
+				droplet_node = gdscript_droplet_scene.instantiate()
+			DropletServerType.CS_SERVER:
+				droplet_node = cs_droplet_scene.instantiate()
+			DropletServerType.CPP_SERVER:
+				droplet_node = cpp_droplet_scene.instantiate()
+		# Add the droplet to the scene
+		get_parent().add_child(droplet_node)
+		droplet_node.owner = owner
+		# Set the droplet's transform
+		var droplet_position := Vector3(randf_range(-1.0, 1.0),
+										randf_range(-1.0, 1.0),
+										randf_range(-1.0, 1.0))
+		droplet_node.transform = Transform3D(Basis(), droplet_position)
+		# Increment current number of droplets
+		num_droplets += 1

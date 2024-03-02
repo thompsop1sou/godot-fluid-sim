@@ -11,15 +11,19 @@ config_version=5
 [application]
 
 config/name="fluid-sim"
-run/main_scene="res://test.tscn"
+run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.2", "C#", "Forward Plus")
-config/icon="res://icon.svg"
 
 [autoload]
 
-PhysicsGlobals="*res://physics_globals.gd"
-PhysicsGlobals2="*res://PhysicsGlobals2.cs"
-GlobalDropletServer="*res://global_droplet_server.tscn"
+CppDropletServerAutoload="*res://cpp_droplet/cpp_droplet_server.tscn"
+CsDropletServerAutoload="*res://cs_droplet/cs_droplet_server.tscn"
+GDScriptDropletServerAutoload="*res://gdscript_droplet/gd_script_droplet_server.tscn"
+
+[display]
+
+window/size/viewport_width=720
+window/size/viewport_height=720
 
 [dotnet]
 
