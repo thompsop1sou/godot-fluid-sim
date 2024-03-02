@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 PhysicsGlobals="*res://physics_globals.gd"
 PhysicsGlobals2="*res://PhysicsGlobals2.cs"
+GlobalDropletServer="*res://global_droplet_server.tscn"
 
 [dotnet]
 

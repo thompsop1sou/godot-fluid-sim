@@ -1,6 +1,7 @@
 #include "register_types.h"
 
 #include "droplet_body3d.h"
+#include "droplet_server.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -16,6 +17,7 @@ void initialize_droplet_module(ModuleInitializationLevel p_level)
 	}
 
 	ClassDB::register_class<DropletBody3D>();
+    ClassDB::register_class<DropletServer>();
 }
 
 void uninitialize_droplet_module(ModuleInitializationLevel p_level)

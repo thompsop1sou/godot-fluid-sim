@@ -1,7 +1,10 @@
 {
     "files.associations": {
         "iostream": "cpp",
-        "ostream": "cpp"
+        "ostream": "cpp",
+        "type_traits": "cpp",
+        "utility": "cpp",
+        "xtr1common": "cpp"
     },
     "cmake.configureOnOpen": false
 }

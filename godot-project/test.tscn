@@ -1,9 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://baaebptsoorum"]
+[gd_scene load_steps=7 format=3 uid="uid://baaebptsoorum"]
 
 [ext_resource type="Script" path="res://test.gd" id="1_qhrsy"]
 [ext_resource type="PackedScene" uid="uid://cqbjmqqqqdvsu" path="res://wall.tscn" id="1_us8dn"]
 [ext_resource type="Script" path="res://droplet_generation.gd" id="3_d28nf"]
-[ext_resource type="Script" path="res://upright.gd" id="4_mipsx"]
 
 [sub_resource type="Environment" id="Environment_exfea"]
 ambient_light_source = 2
@@ -14,19 +13,6 @@ size = Vector3(2, 2, 2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_i5bnb"]
 size = Vector3(2, 2, 2)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r83b7"]
-
-[sub_resource type="SphereMesh" id="SphereMesh_1b2su"]
-material = SubResource("StandardMaterial3D_r83b7")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vxura"]
-albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_rllmg"]
-material = SubResource("StandardMaterial3D_vxura")
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_wxpco"]
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_qhrsy")
@@ -68,8 +54,8 @@ visible = false
 
 [node name="DropletGenerator" type="Node3D" parent="."]
 script = ExtResource("3_d28nf")
-droplet_type = 4
-max_droplets = 0
+droplet_type = 5
+max_droplets = 800
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
@@ -105,18 +91,3 @@ mesh = SubResource("BoxMesh_lu3v8")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D3"]
 shape = SubResource("BoxShape3D_i5bnb")
-
-[node name="RigidBody3D" type="RigidBody3D" parent="."]
-can_sleep = false
-script = ExtResource("4_mipsx")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-mesh = SubResource("SphereMesh_1b2su")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="RigidBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-mesh = SubResource("SphereMesh_rllmg")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
-shape = SubResource("CapsuleShape3D_wxpco")
