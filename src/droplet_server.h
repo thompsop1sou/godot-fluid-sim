@@ -6,6 +6,8 @@
 #include <godot_cpp/classes/physics_body3d.hpp>
 #include <godot_cpp/classes/rigid_body3d.hpp>
 
+#include <mutex>
+
 #include "vec3.h"
 
 namespace godot
@@ -13,10 +15,10 @@ namespace godot
 	class DropletServer : public Node
 	{
 		GDCLASS(DropletServer, Node)
-	
+
 	public:
 		// Max number of droplets
-		static const int MAX_DROPLETS = 2000;
+		static const int MAX_DROPLETS = 4000;
 
 	private:
 		// An array of droplets and their properties
@@ -32,6 +34,9 @@ namespace godot
 
 		// Whether currently in-game
 		bool m_in_game;
+
+		// Used to make sure threads are safe
+		std::mutex m_mutexes[MAX_DROPLETS];
 
 	protected:
 		static void _bind_methods();

@@ -13,13 +13,13 @@ albedo_color = Color(0.501961, 1, 0, 0.25098)
 
 [sub_resource type="SphereMesh" id="SphereMesh_vmp0c"]
 material = SubResource("StandardMaterial3D_2xv82")
-radius = 0.375
-height = 0.75
+radius = 0.333
+height = 0.667
 radial_segments = 12
 rings = 6
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_o8vqo"]
-radius = 0.25
+radius = 0.167
 
 [node name="Droplet" type="RigidBody3D"]
 mass = 65.0
