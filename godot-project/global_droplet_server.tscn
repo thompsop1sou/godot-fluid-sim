@@ -1,4 +1,4 @@
 [gd_scene format=3 uid="uid://c7mdmp8pv0gwu"]
 
 [node name="GlobalDropletServer" type="DropletServer"]
-force_effective_distance = 0.875
+force_effective_distance = 0.75

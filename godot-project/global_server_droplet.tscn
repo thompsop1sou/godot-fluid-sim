@@ -6,13 +6,13 @@
 friction = 0.05
 bounce = 0.3
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f4bt5"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2xv82"]
 transparency = 1
 shading_mode = 0
-albedo_color = Color(1, 0.501961, 0, 0.25098)
+albedo_color = Color(0.501961, 1, 0, 0.25098)
 
-[sub_resource type="SphereMesh" id="SphereMesh_xssvw"]
-material = SubResource("StandardMaterial3D_f4bt5")
+[sub_resource type="SphereMesh" id="SphereMesh_vmp0c"]
+material = SubResource("StandardMaterial3D_2xv82")
 radius = 0.375
 height = 0.75
 radial_segments = 12
@@ -30,7 +30,7 @@ script = ExtResource("1_6q2si")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 process_physics_priority = 2
-mesh = SubResource("SphereMesh_xssvw")
+mesh = SubResource("SphereMesh_vmp0c")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_o8vqo")

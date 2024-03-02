@@ -6,6 +6,8 @@
 #include <godot_cpp/classes/physics_body3d.hpp>
 #include <godot_cpp/classes/rigid_body3d.hpp>
 
+#include "vec3.h"
+
 namespace godot
 {
 	class DropletServer : public Node
@@ -20,8 +22,8 @@ namespace godot
 		// An array of droplets and their properties
 		int m_num_droplets;
 		RigidBody3D* m_droplets[MAX_DROPLETS];
-		Vector3 m_positions[MAX_DROPLETS];
-		Vector3 m_forces[MAX_DROPLETS];
+		Vec3 m_positions[MAX_DROPLETS];
+		Vec3 m_forces[MAX_DROPLETS];
 
 		// The magnitude of the attraction force and the distance that it is effective over
 		float m_force_magnitude;

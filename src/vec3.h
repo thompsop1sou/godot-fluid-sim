@@ -21,6 +21,7 @@ public:
     Vec3(const Vec3& other_vec3);
     Vec3(float p_xyz);
     Vec3(float p_x, float p_y, float p_z);
+    Vec3(godot::Vector3 &godot_vector_3);
     ~Vec3();
     // Overloaded Operators
     Vec3& operator = (const Vec3& other_vec3);

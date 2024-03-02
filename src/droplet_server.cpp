@@ -48,17 +48,22 @@ void DropletServer::_ready()
 
 void DropletServer::_physics_process(double delta)
 {
+    // Get the current positions
+    for (int i = 0; i < m_num_droplets; i++)
+    {
+        m_positions[i] = Vec3(m_droplets[i]->get_global_position());
+    }
     // Sum up the forces
     for (int i = 0; i < m_num_droplets; i++)
     {
-        Vector3 droplet_a_position = m_droplets[i]->get_global_position();
+        Vec3 droplet_a_position = m_positions[i];
         for (int j = i + 1; j < m_num_droplets; j++)
         {
-            Vector3 droplet_b_position = m_droplets[j]->get_global_position();
-            float distance_squared = droplet_a_position.distance_squared_to(droplet_b_position);
+            Vec3 droplet_b_position = m_positions[j];
+            float distance_squared = droplet_a_position.distance_squared(droplet_b_position);
             if (distance_squared < m_force_effective_distance_squared)
             {
-                Vector3 force_direction = (droplet_a_position - droplet_b_position).normalized();
+                Vec3 force_direction = (droplet_a_position - droplet_b_position).normalized();
                 m_forces[i] += -m_force_magnitude * force_direction;
                 m_forces[j] += m_force_magnitude * force_direction;
             }
@@ -67,8 +72,8 @@ void DropletServer::_physics_process(double delta)
     // Apply the forces
     for (int i = 0; i < m_num_droplets; i++)
     {
-        m_droplets[i]->apply_central_force(m_forces[i]);
-        m_forces[i] = Vector3(0.0, 0.0, 0.0);
+        m_droplets[i]->apply_central_force(godot::Vector3(m_forces[i]));
+        m_forces[i] = Vec3::ZERO;
     }
 }
 
@@ -79,8 +84,8 @@ void DropletServer::add_droplet(RigidBody3D* p_droplet)
     if (m_num_droplets < MAX_DROPLETS)
     {
         m_droplets[m_num_droplets] = p_droplet;
-        m_positions[m_num_droplets] = p_droplet->get_global_position();
-        m_forces[m_num_droplets] = Vector3(0.0, 0.0, 0.0);
+        m_positions[m_num_droplets] = Vec3(p_droplet->get_global_position());
+        m_forces[m_num_droplets] = Vec3::ZERO;
         m_num_droplets++;
         UtilityFunctions::print("adding ", p_droplet);
     }
@@ -96,8 +101,8 @@ void DropletServer::remove_droplet(RigidBody3D* p_droplet)
             m_positions[i] = m_positions[m_num_droplets - 1];
             m_forces[i] = m_forces[m_num_droplets - 1];
             m_droplets[m_num_droplets - 1] = nullptr;
-            m_positions[m_num_droplets - 1] = Vector3(0.0, 0.0, 0.0);
-            m_forces[m_num_droplets - 1] = Vector3(0.0, 0.0, 0.0);
+            m_positions[m_num_droplets - 1] = Vec3::ZERO;
+            m_forces[m_num_droplets - 1] = Vec3::ZERO;
             m_num_droplets--;
             UtilityFunctions::print("removing ", p_droplet);
             break;
@@ -124,6 +129,8 @@ void DropletServer::set_force_effective_distance(float p_force_effective_distanc
     else
         m_force_effective_distance = p_force_effective_distance;
     m_force_effective_distance_squared = m_force_effective_distance * m_force_effective_distance;
+    UtilityFunctions::print("force effective distance: ", m_force_effective_distance);
+    UtilityFunctions::print("force effective distance squared: ", m_force_effective_distance_squared);
 }
 
 float DropletServer::get_force_effective_distance() const
