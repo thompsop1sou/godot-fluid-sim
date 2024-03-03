@@ -18,7 +18,6 @@ script = ExtResource("1_lp3pp")
 
 [node name="DropletGenerator" type="Node3D" parent="."]
 script = ExtResource("4_y4u82")
-droplet_server_type = 1
 
 [node name="Container" parent="." instance=ExtResource("2_psroa")]
 
