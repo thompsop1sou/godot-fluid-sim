@@ -13,19 +13,19 @@ env = SConscript("godot-cpp/SConstruct")
 # - LINKFLAGS are for linking flags
 
 # tweak this if you want to use different folders, or more folders, to store your source code in.
-env.Append(CPPPATH=["cpp_droplet_src/"])
-sources = Glob("cpp_droplet_src/*.cpp")
+env.Append(CPPPATH=["godot-project/cpp_droplet/src/"])
+sources = Glob("godot-project/cpp_droplet/src/*.cpp")
 
 if env["platform"] == "macos":
     library = env.SharedLibrary(
-        "godot-project/bin/libgddroplet.{}.{}.framework/libgddroplet.{}.{}".format(
+        "godot-project/addons/droplet-server/droplet-server.{}.{}.framework/droplet-server/droplet-server.{}.{}".format(
             env["platform"], env["target"], env["platform"], env["target"]
         ),
         source=sources,
     )
 else:
     library = env.SharedLibrary(
-        "godot-project/bin/libgddroplet{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
+        "godot-project/addons/droplet-server/droplet-server{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
         source=sources,
     )
 

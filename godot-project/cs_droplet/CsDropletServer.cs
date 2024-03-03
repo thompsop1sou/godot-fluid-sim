@@ -36,63 +36,51 @@ public partial class CsDropletServer : Node
 		}
 	}
 
-	// Whether currently in-game
-	private bool _inGame = false;
 
 
 
 	// Overridden Methods
 
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
-    {
-        _inGame = !Engine.IsEditorHint();
-    }
-
     // Called every physics frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(double delta)
 	{
-		// Only run if in game
-		if (_inGame)
+		// Get the current positions
+		for (int i = 0; i < _numDroplets; ++i)
 		{
-			// Get the current positions
-			for (int i = 0; i < _numDroplets; ++i)
-			{
-				_positions[i] = ToSystemVector3(_droplets[i].Position);
-			}
-			// Sum up the forces, main loop
-			System.Threading.Tasks.Parallel.For(0, _numDroplets, i =>
-			{
-				// Figure out start and end index for sub loop
-				long start = i + 1;
-				long end = start + _numDroplets / 2;
-				if (_numDroplets % 2 == 0 && i * 2 >= _numDroplets)
-					end--;
-				// Sub loop
-				System.Threading.Tasks.Parallel.For(start, end, j =>
-				{
-					long k = j % _numDroplets;
-					float distanceSquared = System.Numerics.Vector3.DistanceSquared(_positions[i], _positions[k]);
-					if (distanceSquared < _forceEffectiveDistanceSquared)
-					{
-						var forceDirection = System.Numerics.Vector3.Normalize(_positions[i] - _positions[k]);
-						_mutexes[i].WaitOne();
-						_forces[i] += -ForceMagnitude * forceDirection;
-						_mutexes[i].ReleaseMutex();
-						_mutexes[k].WaitOne();
-						_forces[k] += ForceMagnitude * forceDirection;
-						_mutexes[k].ReleaseMutex();
-					}
-				});
-			});
-			// Apply the forces
-			System.Threading.Tasks.Parallel.For(0, _numDroplets, i =>
-			{
-				var force = ToGodotVector3(_forces[i]);
-				_droplets[i].ApplyCentralForce(force);
-				_forces[i] = System.Numerics.Vector3.Zero;
-			});
+			_positions[i] = ToSystemVector3(_droplets[i].Position);
 		}
+		// Sum up the forces, main loop
+		System.Threading.Tasks.Parallel.For(0, _numDroplets, i =>
+		{
+			// Figure out start and end index for sub loop
+			long start = i + 1;
+			long end = start + _numDroplets / 2;
+			if (_numDroplets % 2 == 0 && i * 2 >= _numDroplets)
+				end--;
+			// Sub loop
+			System.Threading.Tasks.Parallel.For(start, end, j =>
+			{
+				long k = j % _numDroplets;
+				float distanceSquared = System.Numerics.Vector3.DistanceSquared(_positions[i], _positions[k]);
+				if (distanceSquared < _forceEffectiveDistanceSquared)
+				{
+					var forceDirection = System.Numerics.Vector3.Normalize(_positions[i] - _positions[k]);
+					_mutexes[i].WaitOne();
+					_forces[i] += -ForceMagnitude * forceDirection;
+					_mutexes[i].ReleaseMutex();
+					_mutexes[k].WaitOne();
+					_forces[k] += ForceMagnitude * forceDirection;
+					_mutexes[k].ReleaseMutex();
+				}
+			});
+		});
+		// Apply the forces
+		System.Threading.Tasks.Parallel.For(0, _numDroplets, i =>
+		{
+			var force = ToGodotVector3(_forces[i]);
+			_droplets[i].ApplyCentralForce(force);
+			_forces[i] = System.Numerics.Vector3.Zero;
+		});
 	}
 
 

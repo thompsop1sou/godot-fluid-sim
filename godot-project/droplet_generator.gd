@@ -22,13 +22,13 @@ var droplet_server_type := DropletServerType.GDSCRIPT_SERVER
 # Elapsed time since last droplet generation
 var _elapsed_time: float = 0.0
 
+## The maximum number of droplets that can be generated.
+## Should not be greater than CppDropletServer.MAX_DROPLETS or CsDropletServer.MaxDroplets
+const MAX_DROPLETS = 4000
+
 ## The number of droplets to generate
-@export var droplets_to_generate: int = 2000:
-	get:
-		return droplets_to_generate
-	set(value):
-		var max_droplets: int = mini(4000, 4000)
-		droplets_to_generate = min(value, max_droplets)
+@export_range(0, MAX_DROPLETS)
+var droplets_to_generate: int = 2000
 
 ## The current number of droplets that have been generated
 var num_droplets: int = 0

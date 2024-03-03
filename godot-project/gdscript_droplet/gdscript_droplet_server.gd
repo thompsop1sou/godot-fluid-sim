@@ -23,47 +23,39 @@ var force_effective_distance: float = 0.5:
 		force_effective_distance = absf(value)
 		_force_effective_distance_squared = force_effective_distance * force_effective_distance
 
-# Whether currently in-game
-var _in_game := false
 
 
 
 # Overridden Methods
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	_in_game = not Engine.is_editor_hint()
-
 # Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(_delta: float) -> void:
-	# Only run if in game
-	if _in_game:
-		# Sum up the forces, main loop
-		var i: int = 0
-		var j: int = 0
-		while i < _num_droplets:
-			# Figure out start and end index for sub loop
-			j = i + 1
-			@warning_ignore("integer_division")
-			var end: int = j + int(_num_droplets / 2)
-			if (_num_droplets % 2 == 0 and i * 2 >= _num_droplets):
-				end -= 1
-			# Sub loop
-			while j < end:
-				var k: int = j % _num_droplets
-				var distance_squared = _droplets[i].position.distance_squared_to(_droplets[k].position)
-				if distance_squared < _force_effective_distance_squared:
-					var force_direction = (_droplets[i].position - _droplets[k].position).normalized()
-					_forces[i] += -force_magnitude * force_direction
-					_forces[k] += force_magnitude * force_direction
-				j += 1
-			i += 1
-		i = 0
-		# Apply the forces
-		while i < _num_droplets:
-			_droplets[i].apply_central_force(_forces[i])
-			_forces[i] = Vector3.ZERO
-			i += 1
+	# Sum up the forces, main loop
+	var i: int = 0
+	var j: int = 0
+	while i < _num_droplets:
+		# Figure out start and end index for sub loop
+		j = i + 1
+		@warning_ignore("integer_division")
+		var end: int = j + int(_num_droplets / 2)
+		if (_num_droplets % 2 == 0 and i * 2 >= _num_droplets):
+			end -= 1
+		# Sub loop
+		while j < end:
+			var k: int = j % _num_droplets
+			var distance_squared = _droplets[i].position.distance_squared_to(_droplets[k].position)
+			if distance_squared < _force_effective_distance_squared:
+				var force_direction = (_droplets[i].position - _droplets[k].position).normalized()
+				_forces[i] += -force_magnitude * force_direction
+				_forces[k] += force_magnitude * force_direction
+			j += 1
+		i += 1
+	i = 0
+	# Apply the forces
+	while i < _num_droplets:
+		_droplets[i].apply_central_force(_forces[i])
+		_forces[i] = Vector3.ZERO
+		i += 1
 
 
 
