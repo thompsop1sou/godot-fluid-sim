@@ -22,11 +22,11 @@ On my own laptop computer with 8 GB of RAM and a 16-core processor, I was able t
 2. C#: ~1900 droplets
 3. C++: ~2400 droplets
 
-As expected the C++ server is the most performant, followed closely by the C# server.
+As expected, the C++ server is the most performant, followed closely by the C# server.
 
 ## Running the Project
 
-To run this project, you will need a copy of Godot version 4.2. This can be downloaded from Godot's official [download page](https://godotengine.org/download/windows/).
+To run this project, you will need a copy of Godot version 4.2 with .NET support. This can be downloaded from Godot's official [download page](https://godotengine.org/download/windows/).
 
 Currently, the C++ server has only been compiled for Windows. If you want to run the project on a different system, you will first need to compile by running the following from the root directory (replacing `<your_platform>` with `windows`, `linux`, or `macos`):
 ```
