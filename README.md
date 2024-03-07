@@ -4,7 +4,7 @@
 
 This is a real-time fluid simulation that uses Godot's built-in [RigidBody3D](https://docs.godotengine.org/en/stable/classes/class_rigidbody3d.html) nodes as individual droplets of fluid. The main contribution that this project makes is the inclusion of a "droplet server". This server applies cohesive forces to attract the droplets to each other. This helps to sell the illusion that the fluid has surface tension and viscosity.
 
-https://github.com/thompsop1sou/godot-fluid-sim/assets/114190975/d862cbda-e522-4c06-98f0-8222376e0a62
+https://github.com/thompsop1sou/godot-fluid-sim/assets/114190975/2e731808-9423-4b42-9e21-e409e9b35a5c
 
 ## The Droplet Server
 
