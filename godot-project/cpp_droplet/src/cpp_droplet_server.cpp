@@ -21,8 +21,8 @@ void CppDropletServer::_bind_methods()
 	ClassDB::add_property("CppDropletServer", PropertyInfo(Variant::FLOAT, "force_effective_distance"), "set_force_effective_distance", "get_force_effective_distance");
 
 	// Methods: add_droplet and remove_droplet
-	ClassDB::bind_method(D_METHOD("add_droplet", "p_droplet"), &CppDropletServer::add_droplet);
-	ClassDB::bind_method(D_METHOD("remove_droplet", "p_droplet"), &CppDropletServer::remove_droplet);
+	ClassDB::bind_method(D_METHOD("add_droplet", "droplet_rid"), &CppDropletServer::add_droplet);
+	ClassDB::bind_method(D_METHOD("remove_droplet", "droplet_rid"), &CppDropletServer::remove_droplet);
 }
 
 
@@ -31,14 +31,15 @@ void CppDropletServer::_bind_methods()
 
 CppDropletServer::CppDropletServer() :
 	m_num_droplets(0),
-	m_droplets(),
+	m_droplet_rids(),
 	m_positions(),
 	m_forces(),
 	m_force_magnitude(300.0),
 	m_force_effective_distance(0.5),
 	m_force_effective_distance_squared(0.25),
 	m_in_game(false),
-	m_mutexes()
+	m_mutexes(),
+	m_physics_server(nullptr)
 {}
 
 CppDropletServer::~CppDropletServer()
@@ -53,6 +54,8 @@ void CppDropletServer::_ready()
 {
 	// Determine whether the game is running
 	m_in_game = !Engine::get_singleton()->is_editor_hint();
+	// Get a reference to the physics server singleton
+	m_physics_server = PhysicsServer3D::get_singleton();
 }
 
 // Called every physics frame. 'delta' is the elapsed time since the previous frame.
@@ -64,7 +67,7 @@ void CppDropletServer::_physics_process(double delta)
 		// Get the current positions
 		for (int i = 0; i < m_num_droplets; i++)
 		{
-			m_positions[i] = Vec3(m_droplets[i]->get_global_position());
+			m_positions[i] = Vec3(get_droplet_position(m_droplet_rids[i]));
 		}
 		// Sum up the forces, main loop
 		concurrency::parallel_for(0, m_num_droplets, [this](int i)
@@ -75,7 +78,7 @@ void CppDropletServer::_physics_process(double delta)
 			if (m_num_droplets % 2 == 0 && i * 2 >= m_num_droplets)
 				end--;
 			// Sub loop
-			concurrency::parallel_for(start, end, [this, i](int j)
+			for (int j = start; j < end; j++)
 			{
 				int k = j % m_num_droplets;
 				float distance_squared = m_positions[i].distance_squared(m_positions[k]);
@@ -89,12 +92,12 @@ void CppDropletServer::_physics_process(double delta)
 					m_forces[k] += m_force_magnitude * force_direction;
 					m_mutexes[k].unlock();
 				}
-			});
+			}
 		});
 		// Apply the forces
 		concurrency::parallel_for(0, m_num_droplets, [this](int i)
 		{
-			m_droplets[i]->apply_central_force(godot::Vector3(m_forces[i]));
+			m_physics_server->body_apply_central_force(m_droplet_rids[i], Vector3(m_forces[i]));
 			m_forces[i] = Vec3::ZERO;
 		});
     }
@@ -105,39 +108,55 @@ void CppDropletServer::_physics_process(double delta)
 // Other Functions
 
 // Adds a droplet to the server's array
-void CppDropletServer::add_droplet(RigidBody3D* droplet)
+void CppDropletServer::add_droplet(RID droplet_rid)
 {
+	// Make sure the droplet is a rigid body
+	if (!is_rigid_body(droplet_rid))
+	{
+		UtilityFunctions::printerr("NOT A RIGID BODY: Could not add physics object ", droplet_rid, " to ", this);
+		return;
+	}
+
+	// Try to add it
 	if (m_num_droplets < MAX_DROPLETS)
 	{
-		m_droplets[m_num_droplets] = droplet;
-		m_positions[m_num_droplets] = Vec3(droplet->get_global_position());
+		m_droplet_rids[m_num_droplets] = droplet_rid;
+		m_positions[m_num_droplets] = Vec3(get_droplet_position(droplet_rid));
 		m_forces[m_num_droplets] = Vec3::ZERO;
 		m_num_droplets++;
 	}
 	else
 	{
-		UtilityFunctions::printerr("MAX EXCEEDED: Could not add ", droplet, " to ", this);
+		UtilityFunctions::printerr("MAX EXCEEDED: Could not add physics object ", droplet_rid, " to ", this);
 	}
 }
 
 // Removes a droplet from the server's array
-void CppDropletServer::remove_droplet(RigidBody3D* droplet)
+void CppDropletServer::remove_droplet(RID droplet_rid)
 {
+	// Make sure the droplet is a rigid body
+	if (!is_rigid_body(droplet_rid))
+	{
+		UtilityFunctions::printerr("NOT A RIGID BODY: Could not remove physics object ", droplet_rid, " from ", this);
+		return;
+	}
+
+	// Try to remove it
 	for (int i = 0; i < m_num_droplets; i++)
 	{
-		if (m_droplets[i] == droplet)
+		if (m_droplet_rids[i] == droplet_rid)
 		{
-			m_droplets[i] = m_droplets[m_num_droplets - 1];
+			m_droplet_rids[i] = m_droplet_rids[m_num_droplets - 1];
 			m_positions[i] = m_positions[m_num_droplets - 1];
 			m_forces[i] = m_forces[m_num_droplets - 1];
-			m_droplets[m_num_droplets - 1] = nullptr;
+			m_droplet_rids[m_num_droplets - 1] = RID();
 			m_positions[m_num_droplets - 1] = Vec3::ZERO;
 			m_forces[m_num_droplets - 1] = Vec3::ZERO;
 			m_num_droplets--;
 			return;
 		}
 	}
-	UtilityFunctions::printerr("NOT FOUND: Could not remove ", droplet, " from ", this);
+	UtilityFunctions::printerr("NOT FOUND: Could not remove physics object", droplet_rid, " from ", this);
 }
 
 // Getters and setters for force magnitude
@@ -166,4 +185,17 @@ void CppDropletServer::set_force_effective_distance(const float p_force_effectiv
 	else
 		m_force_effective_distance = p_force_effective_distance;
 	m_force_effective_distance_squared = m_force_effective_distance * m_force_effective_distance;
+}
+
+// Confirms that an RID is for a rigid body
+bool CppDropletServer::is_rigid_body(const RID &droplet_rid) const
+{
+	auto droplet_body_mode = m_physics_server->body_get_mode(droplet_rid);
+	return droplet_body_mode == m_physics_server->BODY_MODE_RIGID || droplet_body_mode == m_physics_server->BODY_MODE_RIGID_LINEAR;
+}
+
+// Gets the position of a droplet from its RID
+Vector3 CppDropletServer::get_droplet_position(const RID &droplet_rid) const
+{
+	return Transform3D(m_physics_server->body_get_state(droplet_rid, m_physics_server->BODY_STATE_TRANSFORM)).origin;
 }

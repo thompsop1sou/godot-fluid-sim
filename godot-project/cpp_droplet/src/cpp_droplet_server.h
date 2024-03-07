@@ -23,7 +23,7 @@ namespace godot
 	private:
 		// An array of droplets and their properties
 		int m_num_droplets;
-		RigidBody3D* m_droplets[MAX_DROPLETS];
+		RID m_droplet_rids[MAX_DROPLETS];
 		Vec3 m_positions[MAX_DROPLETS];
 		Vec3 m_forces[MAX_DROPLETS];
 		std::mutex m_mutexes[MAX_DROPLETS];
@@ -37,6 +37,9 @@ namespace godot
 
 		// Whether currently in-game
 		bool m_in_game;
+
+		// Reference to the physics server singleton
+		PhysicsServer3D* m_physics_server;
 
 	protected:
 		// Needed for exposing stuff to Godot
@@ -52,10 +55,10 @@ namespace godot
 		void _physics_process(double delta) override;
 
 		// Adds a droplet to the server's array
-		void add_droplet(RigidBody3D* p_droplet);
+		void add_droplet(RID droplet_rid);
 
 		// Removes a droplet from the server's array
-		void remove_droplet(RigidBody3D* p_droplet);
+		void remove_droplet(RID droplet_rid);
 
 		// Getter and setter for force magnitude
 		float get_force_magnitude() const;
@@ -64,6 +67,12 @@ namespace godot
 		// Getter and setter for force effective distance
 		float get_force_effective_distance() const;
 		void set_force_effective_distance(const float p_force_effective_distance);
+
+	private:
+		// Confirms that an RID is for a rigid body
+		bool is_rigid_body(const RID &droplet_rid) const;
+		// Gets the position of a droplet from its RID
+		Vector3 get_droplet_position(const RID &droplet_rid) const;
 	};
 }
 

@@ -2,8 +2,8 @@ extends RigidBody3D
 
 # When the droplet enters the tree, add it to the server
 func _enter_tree() -> void:
-	CppDropletServerAutoload.add_droplet(self)
+	CppDropletServerAutoload.add_droplet(get_rid())
 
 # When the droplet exits the tree, remove it from the server
 func _exit_tree() -> void:
-	CppDropletServerAutoload.remove_droplet(self)
+	CppDropletServerAutoload.remove_droplet(get_rid())
