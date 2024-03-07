@@ -3,7 +3,7 @@
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_eg0wo"]
 transparency = 1
 shading_mode = 0
-albedo_color = Color(0, 0, 1, 0.501961)
+albedo_color = Color(0.501961, 0, 1, 0.501961)
 
 [resource]
 material = SubResource("StandardMaterial3D_eg0wo")
