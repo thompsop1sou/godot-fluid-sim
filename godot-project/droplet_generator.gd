@@ -17,11 +17,11 @@ var _cpp_droplet_mesh: Mesh = preload("res://cpp_droplet/cpp_droplet_mesh.tres")
 # Properties About Server Type
 
 # Enum for the droplet server types.
-enum DropletServerType {CPP_SERVER, CS_SERVER}
+enum DropletServerType {CS_SERVER, CPP_SERVER}
 
 ## Which type of droplet server to use.
 @export
-var droplet_server_type := DropletServerType.CPP_SERVER
+var droplet_server_type := DropletServerType.CS_SERVER
 
 
 
@@ -79,8 +79,8 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_elapsed_time += delta
 	# Check if we should generate a new droplet
-	if _elapsed_time > generation_interval and num_droplets < droplets_to_generate:
-		_elapsed_time = 0.0
+	if _elapsed_time >= generation_interval and num_droplets < droplets_to_generate:
+		_elapsed_time = _elapsed_time - generation_interval
 		# If working with droplet scenes...
 		if droplet_object_type == DropletObjectType.SCENE:
 			_generate_droplet_scene(droplet_server_type)
