@@ -5,16 +5,15 @@ extends Node3D
 # Properties
 
 # The different types of droplet scenes
-var gdscript_droplet_scene: PackedScene = preload("res://gdscript_droplet/gdscript_droplet.tscn")
 var cs_droplet_scene: PackedScene = preload("res://cs_droplet/cs_droplet.tscn")
 var cpp_droplet_scene: PackedScene = preload("res://cpp_droplet/cpp_droplet.tscn")
 
 # Enum for the various droplet server types
-enum DropletServerType {GDSCRIPT_SERVER, CS_SERVER, CPP_SERVER}
+enum DropletServerType {CS_SERVER, CPP_SERVER}
 
 ## Which type of droplet server to use
 @export
-var droplet_server_type := DropletServerType.GDSCRIPT_SERVER
+var droplet_server_type := DropletServerType.CPP_SERVER
 
 ## How much time between each droplet generation
 @export var generation_interval: float = 0.01
@@ -46,8 +45,6 @@ func _physics_process(delta: float) -> void:
 		# Create the appropriate droplet type
 		var droplet_node: RigidBody3D
 		match droplet_server_type:
-			DropletServerType.GDSCRIPT_SERVER:
-				droplet_node = gdscript_droplet_scene.instantiate()
 			DropletServerType.CS_SERVER:
 				droplet_node = cs_droplet_scene.instantiate()
 			DropletServerType.CPP_SERVER:

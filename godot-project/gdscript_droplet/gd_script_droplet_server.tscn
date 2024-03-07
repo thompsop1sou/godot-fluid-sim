@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://def0j3n277bva"]
-
-[ext_resource type="Script" path="res://gdscript_droplet/gdscript_droplet_server.gd" id="1_l1ob4"]
-
-[node name="GDScriptDropletServer" type="Node"]
-script = ExtResource("1_l1ob4")

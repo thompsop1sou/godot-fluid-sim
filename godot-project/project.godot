@@ -18,7 +18,6 @@ config/features=PackedStringArray("4.2", "C#", "Forward Plus")
 
 CppDropletServerAutoload="*res://cpp_droplet/cpp_droplet_server.tscn"
 CsDropletServerAutoload="*res://cs_droplet/cs_droplet_server.tscn"
-GDScriptDropletServerAutoload="*res://gdscript_droplet/gd_script_droplet_server.tscn"
 
 [display]
 
