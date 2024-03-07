@@ -31,14 +31,11 @@ void CppDropletServer::_bind_methods()
 
 CppDropletServer::CppDropletServer() :
 	m_num_droplets(0),
-	m_droplet_rids(),
-	m_positions(),
-	m_forces(),
+	m_droplets(),
 	m_force_magnitude(300.0),
 	m_force_effective_distance(0.5),
 	m_force_effective_distance_squared(0.25),
 	m_in_game(false),
-	m_mutexes(),
 	m_physics_server(nullptr)
 {}
 
@@ -64,41 +61,44 @@ void CppDropletServer::_physics_process(double delta)
     // Only run if in game
     if (m_in_game)
     {
-		// Get the current positions
+		// Get the current position of each droplet
 		for (int i = 0; i < m_num_droplets; i++)
 		{
-			m_positions[i] = Vec3(get_droplet_position(m_droplet_rids[i]));
+			m_droplets[i].position = Vec3(get_droplet_position(m_droplets[i].rid));
 		}
-		// Sum up the forces, main loop
+		// Sum up the forces by looping over pairs of droplets
+		// Outer loop to get first droplet
 		concurrency::parallel_for(0, m_num_droplets, [this](int i)
 		{
-			// Figure out start and end index for sub loop
+			// Figure out start and end index for inner loop
 			int start = i + 1;
 			int end = start + m_num_droplets / 2;
 			if (m_num_droplets % 2 == 0 && i * 2 >= m_num_droplets)
 				end--;
-			// Sub loop
+			// Inner loop to get second droplet
 			for (int j = start; j < end; j++)
 			{
 				int k = j % m_num_droplets;
-				float distance_squared = m_positions[i].distance_squared(m_positions[k]);
+				// Apply cohesive forces if the droplets are close enough
+				float distance_squared = m_droplets[i].position.distance_squared(m_droplets[k].position);
 				if (distance_squared < m_force_effective_distance_squared)
 				{
-					Vec3 force_direction = (m_positions[i] - m_positions[k]).normalized();
-					m_mutexes[i].lock();
-					m_forces[i] += -m_force_magnitude * force_direction;
-					m_mutexes[i].unlock();
-					m_mutexes[k].lock();
-					m_forces[k] += m_force_magnitude * force_direction;
-					m_mutexes[k].unlock();
+					Vec3 force_direction = (m_droplets[i].position - m_droplets[k].position).normalized();
+					m_droplets[i].mut.lock();
+					m_droplets[i].force += -m_force_magnitude * force_direction;
+					m_droplets[i].mut.unlock();
+					m_droplets[k].mut.lock();
+					m_droplets[k].force += m_force_magnitude * force_direction;
+					m_droplets[k].mut.unlock();
 				}
 			}
 		});
-		// Apply the forces
+		// Apply the forces for each droplet
 		concurrency::parallel_for(0, m_num_droplets, [this](int i)
 		{
-			m_physics_server->body_apply_central_force(m_droplet_rids[i], Vector3(m_forces[i]));
-			m_forces[i] = Vec3::ZERO;
+			Droplet* droplet = &m_droplets[i];
+			m_physics_server->body_apply_central_force(droplet->rid, Vector3(droplet->force));
+			droplet->force = Vec3::ZERO;
 		});
     }
 }
@@ -120,9 +120,9 @@ void CppDropletServer::add_droplet(RID droplet_rid)
 	// Try to add it
 	if (m_num_droplets < MAX_DROPLETS)
 	{
-		m_droplet_rids[m_num_droplets] = droplet_rid;
-		m_positions[m_num_droplets] = Vec3(get_droplet_position(droplet_rid));
-		m_forces[m_num_droplets] = Vec3::ZERO;
+		m_droplets[m_num_droplets].rid = droplet_rid;
+		m_droplets[m_num_droplets].position = Vec3(get_droplet_position(droplet_rid));
+		m_droplets[m_num_droplets].force = Vec3::ZERO;
 		m_num_droplets++;
 	}
 	else
@@ -144,14 +144,14 @@ void CppDropletServer::remove_droplet(RID droplet_rid)
 	// Try to remove it
 	for (int i = 0; i < m_num_droplets; i++)
 	{
-		if (m_droplet_rids[i] == droplet_rid)
+		if (m_droplets[i].rid == droplet_rid)
 		{
-			m_droplet_rids[i] = m_droplet_rids[m_num_droplets - 1];
-			m_positions[i] = m_positions[m_num_droplets - 1];
-			m_forces[i] = m_forces[m_num_droplets - 1];
-			m_droplet_rids[m_num_droplets - 1] = RID();
-			m_positions[m_num_droplets - 1] = Vec3::ZERO;
-			m_forces[m_num_droplets - 1] = Vec3::ZERO;
+			m_droplets[i].rid = m_droplets[m_num_droplets - 1].rid;
+			m_droplets[i].position = m_droplets[m_num_droplets - 1].position;
+			m_droplets[i].force = m_droplets[m_num_droplets - 1].force;
+			m_droplets[m_num_droplets - 1].rid = RID();
+			m_droplets[m_num_droplets - 1].position = Vec3::ZERO;
+			m_droplets[m_num_droplets - 1].force = Vec3::ZERO;
 			m_num_droplets--;
 			return;
 		}

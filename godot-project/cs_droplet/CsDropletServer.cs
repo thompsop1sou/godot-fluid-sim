@@ -8,20 +8,26 @@ public partial class CsDropletServer : Node
 	// Max number of droplets
 	public const int MaxDroplets = 4000;
 
-	// An array of droplets and their properties
+	// A struct to hold information about each droplet
+	private struct Droplet
+	{
+		public Rid PhysRid;
+		public System.Numerics.Vector3 Position;
+		public System.Numerics.Vector3 Force;
+		public System.Threading.Mutex Mut;
+	}
+
+	// An array of Droplet structs
 	private int _numDroplets = 0;
-	private Rid[] _dropletRids = new Rid[MaxDroplets];
-	private System.Numerics.Vector3[] _positions = new System.Numerics.Vector3[MaxDroplets];
-	private System.Numerics.Vector3[] _forces = new System.Numerics.Vector3[MaxDroplets];
-	private System.Threading.Mutex[] _mutexes = new System.Threading.Mutex[MaxDroplets];
+	private Droplet[] _droplets = new Droplet[MaxDroplets];
 
 	// The magnitude of the attraction force
 	[Export]
 	public float ForceMagnitude {get; set;}= 300.0f;
 
 	// The distance that the attraction force is effective over
-	private float _forceEffectiveDistance = 0.5f;
 	private float _forceEffectiveDistanceSquared = 0.25f;
+	private float _forceEffectiveDistance = 0.5f;
 	[Export]
 	public float ForceEffectiveDistance
 	{
@@ -44,41 +50,43 @@ public partial class CsDropletServer : Node
     // Called every physics frame. 'delta' is the elapsed time since the previous frame.
     public override void _PhysicsProcess(double delta)
 	{
-		// Get the current positions
+		// Get the current position of each droplet
 		for (int i = 0; i < _numDroplets; ++i)
 		{
-			_positions[i] = ToSystemVector3(GetDropletPosition(_dropletRids[i]));
+			_droplets[i].Position = ToSystemVector3(GetDropletPosition(_droplets[i].PhysRid));
 		}
-		// Sum up the forces, main loop
+		// Sum up the forces by looping over pairs of droplets
+		// Outer loop to get first droplet
 		System.Threading.Tasks.Parallel.For(0, _numDroplets, i =>
 		{
-			// Figure out start and end index for sub loop
+			// Figure out start and end index for inner loop
 			long start = i + 1;
 			long end = start + _numDroplets / 2;
 			if (_numDroplets % 2 == 0 && i * 2 >= _numDroplets)
 				end--;
-			// Sub loop
+			// Inner loop to get second droplet
 			for (long j = start; j < end; j++)
 			{
 				long k = j % _numDroplets;
-				float distanceSquared = System.Numerics.Vector3.DistanceSquared(_positions[i], _positions[k]);
+				// Apply cohesive forces if the droplets are close enough
+				float distanceSquared = System.Numerics.Vector3.DistanceSquared(_droplets[i].Position, _droplets[k].Position);
 				if (distanceSquared < _forceEffectiveDistanceSquared)
 				{
-					var forceDirection = System.Numerics.Vector3.Normalize(_positions[i] - _positions[k]);
-					_mutexes[i].WaitOne();
-					_forces[i] += -ForceMagnitude * forceDirection;
-					_mutexes[i].ReleaseMutex();
-					_mutexes[k].WaitOne();
-					_forces[k] += ForceMagnitude * forceDirection;
-					_mutexes[k].ReleaseMutex();
+					var forceDirection = System.Numerics.Vector3.Normalize(_droplets[i].Position - _droplets[k].Position);
+					_droplets[i].Mut.WaitOne();
+					_droplets[i].Force += -ForceMagnitude * forceDirection;
+					_droplets[i].Mut.ReleaseMutex();
+					_droplets[k].Mut.WaitOne();
+					_droplets[k].Force += ForceMagnitude * forceDirection;
+					_droplets[k].Mut.ReleaseMutex();
 				}
 			}
 		});
-		// Apply the forces
+		// Apply the forces for each droplet
 		System.Threading.Tasks.Parallel.For(0, _numDroplets, i =>
 		{
-			PhysicsServer3D.BodyApplyCentralForce(_dropletRids[i], ToGodotVector3(_forces[i]));
-			_forces[i] = System.Numerics.Vector3.Zero;
+			PhysicsServer3D.BodyApplyCentralForce(_droplets[i].PhysRid, ToGodotVector3(_droplets[i].Force));
+			_droplets[i].Force = System.Numerics.Vector3.Zero;
 		});
 	}
 
@@ -111,9 +119,10 @@ public partial class CsDropletServer : Node
 		// Try to add it
 		if (_numDroplets < MaxDroplets)
 		{
-			_dropletRids[_numDroplets] = dropletRid;
-			_forces[_numDroplets] = System.Numerics.Vector3.Zero;
-			_mutexes[_numDroplets] = new();
+			_droplets[_numDroplets].PhysRid = dropletRid;
+			_droplets[_numDroplets].Position = ToSystemVector3(GetDropletPosition(dropletRid));
+			_droplets[_numDroplets].Force = System.Numerics.Vector3.Zero;
+			_droplets[_numDroplets].Mut = new System.Threading.Mutex();
 			_numDroplets++;
 		}
 		else
@@ -135,14 +144,14 @@ public partial class CsDropletServer : Node
 		// Try to remove it
 		for (int i = 0; i < _numDroplets; i++)
 		{
-			if (_dropletRids[i] == dropletRid)
+			if (_droplets[i].PhysRid == dropletRid)
 			{
-				_dropletRids[i] = _dropletRids[_numDroplets - 1];
-				_positions[i] = _positions[_numDroplets - 1];
-				_forces[i] = _forces[_numDroplets - 1];
-				_dropletRids[_numDroplets - 1] = new Rid();
-				_positions[_numDroplets - 1] = System.Numerics.Vector3.Zero;
-				_forces[_numDroplets - 1] = System.Numerics.Vector3.Zero;
+				_droplets[i].PhysRid = _droplets[_numDroplets - 1].PhysRid;
+				_droplets[i].Position = _droplets[_numDroplets - 1].Position;
+				_droplets[i].Force = _droplets[_numDroplets - 1].Force;
+				_droplets[_numDroplets - 1].PhysRid = new Rid();
+				_droplets[_numDroplets - 1].Position = System.Numerics.Vector3.Zero;
+				_droplets[_numDroplets - 1].Force = System.Numerics.Vector3.Zero;
 				_numDroplets--;
 				return;
 			}

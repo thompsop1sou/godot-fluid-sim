@@ -21,12 +21,18 @@ namespace godot
 		static const int MAX_DROPLETS = 4000;
 
 	private:
-		// An array of droplets and their properties
+		// A struct to hold information about each droplet
+		struct Droplet
+		{
+			RID rid;
+			Vec3 position;
+			Vec3 force;
+			std::mutex mut;
+		};
+
+		// An array of Droplet structs
 		int m_num_droplets;
-		RID m_droplet_rids[MAX_DROPLETS];
-		Vec3 m_positions[MAX_DROPLETS];
-		Vec3 m_forces[MAX_DROPLETS];
-		std::mutex m_mutexes[MAX_DROPLETS];
+		Droplet m_droplets[MAX_DROPLETS];
 
 		// The magnitude of the attraction force
 		float m_force_magnitude;
