@@ -1,28 +1,17 @@
-[gd_scene load_steps=6 format=3 uid="uid://c7i0lvx1wukaj"]
+[gd_scene load_steps=5 format=3 uid="uid://c7i0lvx1wukaj"]
 
 [ext_resource type="Script" path="res://cpp_droplet/cpp_droplet.gd" id="1_g8puk"]
+[ext_resource type="SphereMesh" uid="uid://pkx316cfvm8w" path="res://cpp_droplet/cpp_droplet_mesh.tres" id="2_sfdeo"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_dath4"]
 friction = 0.05
 bounce = 0.3
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2xv82"]
-transparency = 1
-shading_mode = 0
-albedo_color = Color(0, 0, 1, 0.25098)
-
-[sub_resource type="SphereMesh" id="SphereMesh_vmp0c"]
-material = SubResource("StandardMaterial3D_2xv82")
-radius = 0.333
-height = 0.667
-radial_segments = 12
-rings = 6
-
 [sub_resource type="SphereShape3D" id="SphereShape3D_o8vqo"]
 radius = 0.167
 
 [node name="CppDroplet" type="RigidBody3D"]
-mass = 65.0
+mass = 50.0
 physics_material_override = SubResource("PhysicsMaterial_dath4")
 can_sleep = false
 lock_rotation = true
@@ -30,7 +19,7 @@ script = ExtResource("1_g8puk")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 process_physics_priority = 2
-mesh = SubResource("SphereMesh_vmp0c")
+mesh = ExtResource("2_sfdeo")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_o8vqo")
