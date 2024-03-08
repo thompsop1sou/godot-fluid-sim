@@ -2,7 +2,7 @@
 
 // Constructors and Destructor
 
-Parallel::Parallel(int p_min, int p_max)
+Parallel::Parallel(int p_min, int p_max) : m_min(0), m_max(0), m_range(nullptr)
 {
 	// Initialize min and max
 	if (p_min > p_max)

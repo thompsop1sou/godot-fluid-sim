@@ -34,7 +34,7 @@ Vec3::Vec3(float p_x, float p_y, float p_z) :
 	z(p_z)
 {}
 
-Vec3::Vec3(godot::Vector3 &godot_vector3) :
+Vec3::Vec3(const godot::Vector3 &godot_vector3) :
 	x(godot_vector3.x),
 	y(godot_vector3.y),
 	z(godot_vector3.z)
