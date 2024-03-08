@@ -1,13 +1,13 @@
 #ifndef CPP_DROPLET_SERVER_H
 #define CPP_DROPLET_SERVER_H
 
-#include <godot_cpp/variant/variant.hpp>
 #include <godot_cpp/variant/vector3.hpp>
-#include <godot_cpp/classes/physics_body3d.hpp>
-#include <godot_cpp/classes/rigid_body3d.hpp>
+#include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/classes/physics_server3d.hpp>
 
 #include <mutex>
 
+#include "parallel.h"
 #include "vec3.h"
 
 namespace godot
@@ -33,6 +33,9 @@ namespace godot
 		// An array of Droplet structs
 		int m_num_droplets;
 		Droplet m_droplets[MAX_DROPLETS];
+
+		// An object that will be used for parallel looping
+		Parallel m_parallel;
 
 		// The magnitude of the attraction force
 		float m_force_magnitude;

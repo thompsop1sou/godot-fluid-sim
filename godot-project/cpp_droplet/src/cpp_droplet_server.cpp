@@ -1,8 +1,6 @@
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 
-#include <ppl.h>
-
 #include "cpp_droplet_server.h"
 
 using namespace godot;
@@ -32,6 +30,7 @@ void CppDropletServer::_bind_methods()
 CppDropletServer::CppDropletServer() :
 	m_num_droplets(0),
 	m_droplets(),
+	m_parallel(0, MAX_DROPLETS),
 	m_force_magnitude(300.0),
 	m_force_effective_distance(0.5),
 	m_force_effective_distance_squared(0.25),
@@ -58,9 +57,11 @@ void CppDropletServer::_ready()
 // Called every physics frame. 'delta' is the elapsed time since the previous frame.
 void CppDropletServer::_physics_process(double delta)
 {
-    // Only run if in game
-    if (m_in_game)
-    {
+	// Only run if in game
+	if (m_in_game)
+	{
+		// Will hold result of loops
+		bool success = true;
 		// Get the current position of each droplet
 		for (int i = 0; i < m_num_droplets; i++)
 		{
@@ -68,7 +69,7 @@ void CppDropletServer::_physics_process(double delta)
 		}
 		// Sum up the forces by looping over pairs of droplets
 		// Outer loop to get first droplet
-		concurrency::parallel_for(0, m_num_droplets, [this](int i)
+		success = m_parallel.for_int(0, m_num_droplets, [this](int i)
 		{
 			// Figure out start and end index for inner loop
 			int start = i + 1;
@@ -93,14 +94,25 @@ void CppDropletServer::_physics_process(double delta)
 				}
 			}
 		});
-		// Apply the forces for each droplet
-		concurrency::parallel_for(0, m_num_droplets, [this](int i)
+		// Let the Godot user know if there is an error
+		if (!success)
 		{
-			Droplet* droplet = &m_droplets[i];
-			m_physics_server->body_apply_central_force(droplet->rid, Vector3(droplet->force));
-			droplet->force = Vec3::ZERO;
+			UtilityFunctions::printerr("There was an error when summing forces in the physics process for ", this);
+			success = true;
+		}
+		// Apply the forces for each droplet
+		success = m_parallel.for_int(0, m_num_droplets, [this](int i)
+		{
+			m_physics_server->body_apply_central_force(m_droplets[i].rid, Vector3(m_droplets[i].force));
+			m_droplets[i].force = Vec3::ZERO;
 		});
-    }
+		// Let the Godot user know if there is an error
+		if (!success)
+		{
+			UtilityFunctions::printerr("There was an error when applying forces in the physics process for ", this);
+			success = true;
+		}
+	}
 }
 
 
