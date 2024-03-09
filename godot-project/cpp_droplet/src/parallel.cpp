@@ -19,7 +19,7 @@ Parallel::Parallel(int p_min, int p_max) : m_min(0), m_max(0), m_range(nullptr)
 	m_range = new int[m_max - m_min];
 	for (int i = m_min; i < m_max; i++)
 	{
-		m_range[i - m_min] = i;
+		m_range[index_of(i)] = i;
 	}
 }
 
@@ -83,16 +83,22 @@ void Parallel::set_min_max(int p_min, int p_max)
 
 // For Loop (essentially a convenient wrapper for std::for_each(std::execution::par, ...))
 
-bool Parallel::for_int(int p_start, int p_end, function<void(int)> func) const
+void Parallel::for_int(int p_start, int p_end, function<void(int)> func)
 {
 	// Break early if the range is bad
-	if (p_start > p_end || p_start < m_min || p_end > m_max)
+	if (p_start > p_end)
 	{
-		return false;
+		return;
+	}
+	// Reset the range if needed
+	if (p_start < m_min || p_end > m_max)
+	{
+		m_min = min(p_start, m_min);
+		m_max = max(p_end, m_max);
+		reset_range();
 	}
 	// Run the for loop
-	for_each(par, &m_range[p_start - m_min], &m_range[p_end - m_min], func);
-	return true;
+	for_each(par, &m_range[index_of(p_start)], &m_range[index_of(p_end)], func);
 }
 
 // Helper Functions
@@ -103,6 +109,11 @@ void Parallel::reset_range()
 	m_range = new int[m_max - m_min];
 	for (int i = m_min; i < m_max; i++)
 	{
-		m_range[i - m_min] = i;
+		m_range[index_of(i)] = i;
 	}
+}
+
+int Parallel::index_of(int p_x) const
+{
+	return p_x - m_min;
 }

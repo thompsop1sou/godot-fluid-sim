@@ -60,8 +60,6 @@ void CppDropletServer::_physics_process(double delta)
 	// Only run if in game
 	if (m_in_game)
 	{
-		// Will hold result of loops
-		bool success = true;
 		// Get the current position of each droplet
 		for (int i = 0; i < m_num_droplets; i++)
 		{
@@ -69,7 +67,7 @@ void CppDropletServer::_physics_process(double delta)
 		}
 		// Sum up the forces by looping over pairs of droplets
 		// Outer loop to get first droplet
-		success = m_parallel.for_int(0, m_num_droplets, [this](int i)
+		m_parallel.for_int(0, m_num_droplets, [this](int i)
 		{
 			// Figure out start and end index for inner loop
 			int start = i + 1;
@@ -94,24 +92,12 @@ void CppDropletServer::_physics_process(double delta)
 				}
 			}
 		});
-		// Let the Godot user know if there is an error
-		if (!success)
-		{
-			UtilityFunctions::printerr("There was an error when summing forces in the physics process for ", this);
-			success = true;
-		}
 		// Apply the forces for each droplet
-		success = m_parallel.for_int(0, m_num_droplets, [this](int i)
+		m_parallel.for_int(0, m_num_droplets, [this](int i)
 		{
 			m_physics_server->body_apply_central_force(m_droplets[i].rid, Vector3(m_droplets[i].force));
 			m_droplets[i].force = Vec3::ZERO;
 		});
-		// Let the Godot user know if there is an error
-		if (!success)
-		{
-			UtilityFunctions::printerr("There was an error when applying forces in the physics process for ", this);
-			success = true;
-		}
 	}
 }
 
