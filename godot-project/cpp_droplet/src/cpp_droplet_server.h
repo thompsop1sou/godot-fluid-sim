@@ -5,9 +5,9 @@
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/physics_server3d.hpp>
 
+#include <execution>
 #include <mutex>
 
-#include "parallel.h"
 #include "vec3.h"
 
 namespace godot
@@ -33,9 +33,6 @@ namespace godot
 		// An array of Droplet structs
 		int m_num_droplets;
 		Droplet m_droplets[MAX_DROPLETS];
-
-		// An object that will be used for parallel looping
-		Parallel m_parallel;
 
 		// The magnitude of the attraction force
 		float m_force_magnitude;

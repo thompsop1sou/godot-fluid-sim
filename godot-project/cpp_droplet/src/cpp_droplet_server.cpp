@@ -30,7 +30,6 @@ void CppDropletServer::_bind_methods()
 CppDropletServer::CppDropletServer() :
 	m_num_droplets(0),
 	m_droplets(),
-	m_parallel(0, MAX_DROPLETS),
 	m_force_magnitude(300.0),
 	m_force_effective_distance(0.5),
 	m_force_effective_distance_squared(0.25),
@@ -67,36 +66,30 @@ void CppDropletServer::_physics_process(double delta)
 		}
 		// Sum up the forces by looping over pairs of droplets
 		// Outer loop to get first droplet
-		m_parallel.for_int(0, m_num_droplets, [this](int i)
+		std::for_each(std::execution::par, &m_droplets[0], &m_droplets[m_num_droplets], [this] (Droplet& droplet_a)
 		{
-			// Figure out start and end index for inner loop
-			int start = i + 1;
-			int end = start + m_num_droplets / 2;
-			if (m_num_droplets % 2 == 0 && i * 2 >= m_num_droplets)
-				end--;
 			// Inner loop to get second droplet
-			for (int j = start; j < end; j++)
+			std::for_each(std::execution::par, &droplet_a + 1, &m_droplets[m_num_droplets], [this, &droplet_a] (Droplet& droplet_b)
 			{
-				int k = j % m_num_droplets;
 				// Apply cohesive forces if the droplets are close enough
-				float distance_squared = m_droplets[i].position.distance_squared(m_droplets[k].position);
+				float distance_squared = droplet_a.position.distance_squared(droplet_b.position);
 				if (distance_squared < m_force_effective_distance_squared)
 				{
-					Vec3 force_direction = (m_droplets[i].position - m_droplets[k].position).normalized();
-					m_droplets[i].mut.lock();
-					m_droplets[i].force += -m_force_magnitude * force_direction;
-					m_droplets[i].mut.unlock();
-					m_droplets[k].mut.lock();
-					m_droplets[k].force += m_force_magnitude * force_direction;
-					m_droplets[k].mut.unlock();
+					Vec3 force_direction = (droplet_a.position - droplet_b.position).normalized();
+					droplet_a.mut.lock();
+					droplet_a.force += -m_force_magnitude * force_direction;
+					droplet_a.mut.unlock();
+					droplet_b.mut.lock();
+					droplet_b.force += m_force_magnitude * force_direction;
+					droplet_b.mut.unlock();
 				}
-			}
+			});
 		});
 		// Apply the forces for each droplet
-		m_parallel.for_int(0, m_num_droplets, [this](int i)
+		std::for_each(std::execution::par, &m_droplets[0], &m_droplets[m_num_droplets], [this] (Droplet& droplet)
 		{
-			m_physics_server->body_apply_central_force(m_droplets[i].rid, Vector3(m_droplets[i].force));
-			m_droplets[i].force = Vec3::ZERO;
+			m_physics_server->body_apply_central_force(droplet.rid, Vector3(droplet.force));
+			droplet.force = Vec3::ZERO;
 		});
 	}
 }
