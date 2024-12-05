@@ -2,6 +2,8 @@
 
 *Created using the [Godot](https://godotengine.org/) game engine with the [Godot Jolt](https://github.com/godot-jolt/godot-jolt) addon.*
 
+> **Note:** I am working on another project, based on this one, which allows the fluid to freeze into ice blocks. I made some significant changes, such as removing the C# server, so I've decided to just start with a new repo. You can find it here: [Freezable Fluid Sim](https://github.com/thompsop1sou/freezable-fluid-sim)
+
 This is a real-time fluid simulation that uses Godot's built-in [RigidBody3D](https://docs.godotengine.org/en/stable/classes/class_rigidbody3d.html) nodes as individual droplets of fluid. The main contribution that this project makes is the inclusion of a "droplet server". This server applies cohesive forces to attract the droplets to each other. This helps to sell the illusion that the fluid has surface tension and viscosity.
 
 https://github.com/thompsop1sou/godot-fluid-sim/assets/114190975/2e731808-9423-4b42-9e21-e409e9b35a5c
